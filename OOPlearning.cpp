@@ -30,14 +30,29 @@ public:
 };
 
 void ChooseOptions(){
-
+    /*
+    27.02.2021
+    Now you have only 2 options:
+    1. Put money : just enter amount you "put"
+    2. Get money from your account :
+        2.1. Check if you have enough money
+        2.2. Confirmation SMS if amount of money is too big (to a file)
+        2.3. Case when you enter wrong amount or want to exit
+    */
 }
 
-bool findLogin(string login){
-    return true ;
+bool findLogin(string login, vector<DataClient> clients){
+    /*
+    Not linear search,
+    maybe hash table or just binary tree
+    */
 }
 
-bool CheckPassword( string login, string password){
+bool CheckPassword( string login, string password, vector<DataClient> clients){
+    /*
+    If password is right - everything Ok!
+    Should be hash table or binary tree
+    */
     return true ;
 }
 void Clear() {
@@ -45,31 +60,42 @@ void Clear() {
 }
 
 void WelcomeMenu(){
+    /*
+    Try to make everything not in console
+    */
     cout << "Choose an action : \n\n" ;
     cout << "Log in : (Press 1)\n" ;
     cout << "Log up : (Press 2)\n" ;
     cout << "Exit : (Press 3)\n" ;
 }
 
-void LogIn(){
+void LogIn(vector<DataClient>& clients){
+    /*
+    Should be a chance to exit whenever you want
+    */
+
     string login ;cout << "Enter your login : " ; cin >> login ;
-    if( !findLogin(login) ){
+    if( !findLogin(login, clients) ){
         cout << "Ooops...Sorry, but it's wrong login. \nPlease try again.\n" ;
-            LogIn() ;
+            LogIn(clients) ;
     }
 
     string password ; cout << "Enter your password : " ; cin >> password ;
-    if( !CheckPassword(login, password) ){
+    if( !CheckPassword(login, password, clients) ){
         cout << "Wrong one! Sorry, try again!" ;
-            LogIn() ;
+            LogIn(clients) ;
     }
     Clear() ;
         cout << "Everything Ok!\n" ;
             ChooseOptions() ;
 }
 
-void LogUp(){
-
+void LogUp(vector<DataClient>& clients){
+    /*
+    Create login -> check if it has already existed
+    Create password -> make a system to check if it is safety or not
+    Confirm password
+    */
 }
 
 void makeChoosenAction(int action, vector<DataClient>& clients ){
@@ -78,9 +104,37 @@ void makeChoosenAction(int action, vector<DataClient>& clients ){
     } else {LogUp(clients) ;}
 }
 
+vector<DataClient> addAllClients(){
+    vector<DataClient> dataclient ;
+
+    /// make directory with .csv
+
+    clientInfo.open(file_path);
+    if(!clientInfo.is_open()){
+        Clear(); return dataclient;
+    }
+    string current_clients ;
+    getline(clientInfo, current_clients) ;
+
+    int total_clients = stoi(current_clients) ;
+
+    for(int i = 0 ; i < total_clients ; i ++ ){
+        getline(clientInfo, current_clients) ;
+        int space = current_clients.find('0') ;
+        string login = current_clients.substr(0, space),
+               password = current_clients.substr(space + 1, current_clients.size() - space) ;
+        dataclient.push_back({login, password}) ;
+    }
+    return dataclient ;
+}
+
 int main()
 {
-    vector<DataClient> clients ;
+    vector<DataClient> clients = addAllClients() ;
+
+    for(int i = 0 ; i < clients.size() ; i ++ )
+        cout << clients[i].Login << '\n' ;
+
     cout << "Welcome in YourBank!\n" ;
     WelcomeMenu() ;
     int clientAction ; cin >> clientAction ;

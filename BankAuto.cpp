@@ -109,22 +109,22 @@ vector<DataClient> addAllClients(){
 
     /// make directory with .csv
 
-    clientInfo.open(file_path);
-    if(!clientInfo.is_open()){
-        Clear(); return dataclient;
-    }
-    string current_clients ;
-    getline(clientInfo, current_clients) ;
-
-    int total_clients = stoi(current_clients) ;
-
-    for(int i = 0 ; i < total_clients ; i ++ ){
-        getline(clientInfo, current_clients) ;
-        int space = current_clients.find('0') ;
-        string login = current_clients.substr(0, space),
-               password = current_clients.substr(space + 1, current_clients.size() - space) ;
-        dataclient.push_back({login, password}) ;
-    }
+    //clientInfo.open(file_path);
+//    if(!clientInfo.is_open()){
+//        Clear(); return dataclient;
+//    }
+//    string current_clients ;
+//    getline(clientInfo, current_clients) ;
+//
+//    int total_clients = stoi(current_clients) ;
+//
+//    for(int i = 0 ; i < total_clients ; i ++ ){
+//        getline(clientInfo, current_clients) ;
+//        int space = current_clients.find('0') ;
+//        string login = current_clients.substr(0, space),
+//               password = current_clients.substr(space + 1, current_clients.size() - space) ;
+//        dataclient.push_back({login, password}) ;
+//    }
     return dataclient ;
 }
 

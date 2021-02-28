@@ -2,8 +2,12 @@
 #include <vector>
 #include <string>
 #include <bits/stdc++.h>
+#include <fstream>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 using namespace std;
+namespace fs = filesystem ;
 
 struct DataClient{
     string Login,
@@ -104,36 +108,43 @@ void makeChoosenAction(int action, vector<DataClient>& clients ){
     } else {LogUp(clients) ;}
 }
 
-vector<DataClient> addAllClients(){
+vector<DataClient> addAllClients(string files_path){
     vector<DataClient> dataclient ;
 
     /// make directory with .csv
+    vector<string> filesWithClientsData ;
+    for( const auto &entry: filesystem::directory_iterator(files_path)){
+        if(entry.path().extension() == ".csv"){
+            fs::path path{entry} ;
+            filesWithClientsData.push_back(path.string()) ;
+        }
+    }
+    ifstream current_file ;
+    for(int i = 0 ; i < filesWithClientsData.size() ; i ++ ){
 
-    //clientInfo.open(file_path);
-//    if(!clientInfo.is_open()){
-//        Clear(); return dataclient;
-//    }
-//    string current_clients ;
-//    getline(clientInfo, current_clients) ;
-//
-//    int total_clients = stoi(current_clients) ;
-//
-//    for(int i = 0 ; i < total_clients ; i ++ ){
-//        getline(clientInfo, current_clients) ;
-//        int space = current_clients.find('0') ;
-//        string login = current_clients.substr(0, space),
-//               password = current_clients.substr(space + 1, current_clients.size() - space) ;
-//        dataclient.push_back({login, password}) ;
-//    }
+        current_file.open(filesWithClientsData[i]) ;
+        if(!current_file.is_open()){
+            Clear(); return dataclient;
+        }
+        string current_client ;
+        while(getline(current_file, current_client)){
+            int space = current_client.find(' ') ;
+            string login = current_client.substr(0, space),
+                   password = current_client.substr(space + 1, current_client.size() - space) ;
+            dataclient.push_back({login, password}) ;
+        }
+        current_file.close() ;
+    }
     return dataclient ;
 }
 
 int main()
 {
-    vector<DataClient> clients = addAllClients() ;
+
+    vector<DataClient> clients = addAllClients("clients") ;
 
     for(int i = 0 ; i < clients.size() ; i ++ )
-        cout << clients[i].Login << '\n' ;
+        cout << clients[i].Login << " | " << clients[i].Password << '\n' ;
 
     cout << "Welcome in YourBank!\n" ;
     WelcomeMenu() ;
